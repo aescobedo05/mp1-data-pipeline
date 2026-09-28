@@ -10,3 +10,9 @@ __pycache__/
 # OS
 .DS_Store
 Thumbs.db
+
+# Python caches & virtual envs
+__pycache__/
+*.pyc
+.venv/
+venv/
