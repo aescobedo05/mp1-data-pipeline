@@ -11,30 +11,19 @@ Usage:
 import argparse
 import logging
 import sys
-from pathlib import Path
 
-from data_loaders import load_data
-from data_processor import process_data, create_cleaning_report
+from src import (
+    create_cleaning_report,
+    load_data,
+    process_data,
+    save_data,
+    setup_logging,
+    validate_dataframe,
+    validate_input,
+)
 
 
 logger = logging.getLogger(__name__)
-
-
-def setup_logging(verbose=False):
-    """Configure logging for the pipeline."""
-    if verbose is True:
-        logging.basicConfig(
-            level=logging.DEBUG,
-            format="%(asctime)s %(levelname)-8s %(name)s — %(message)s",
-            datefmt="%H:%M:%S"
-        )
-    else:
-        logging.basicConfig(
-            level=logging.INFO,
-            format="%(asctime)s %(levelname)-8s %(name)s — %(message)s",
-            datefmt="%H:%M:%S"
-                )
-
 
 
 def parse_arguments():
@@ -66,16 +55,6 @@ def parse_arguments():
     return parser.parse_args()
 
 
-def validate_input(filepath):
-    """Check whether the input path exists and is a file."""
-    if Path(filepath).is_file() is True:
-        logger.info("Input file validated: %s", filepath)
-        return True
-    else:
-        logger.error("Input file not found: %s", filepath)
-        sys.exit(1)
-
-
 def main():
     """Main pipeline function."""
     args = parse_arguments()
@@ -96,17 +75,32 @@ def main():
 
     original_df = df.copy()
 
+    validation = config["validation"]
+
+    require_cols = validation["required_columns"]
+    nume_cols = validation["numeric_columns"]
+
     try:
-        df = process_data(df, config)
+        validated_df = validate_dataframe(df, require_cols, nume_cols)
+    except ValueError:
+        sys.exit(1)
+
+    logger.info("rows before validation:%s, rows after: %s", len(original_df), len(validated_df))
+
+    try:
+        df = process_data(validated_df, config)
     except ValueError:
         sys.exit(1)
 
     logger.info("Processing complete: %s -> %s rows", len(original_df), len(df))
 
     report = create_cleaning_report(original_df, df)
+
+    save_data(df, args.output)
+    logger.info("Saved clean data to %s", args.output)
+
     print(report)
 
-    logger.info("Saved clean data to %s", args.output)
 
 
 
