@@ -32,13 +32,13 @@ def parse_arguments():
         description="Check the quality of a CSV file."
         )
 
-    parser.add_argument("--input", "-i", 
-                        required=True, 
+    parser.add_argument("--input", "-i",
+                        required=True,
                         help="Path to the input file"
                         )
 
-    parser.add_argument("--config", 
-                        required=True, 
+    parser.add_argument("--config",
+                        required=True,
                         help="Configuration file"
                         )
 
@@ -92,7 +92,7 @@ def main():
     except ValueError:
         sys.exit(1)
 
-    logger.info("Processing complete: %s -> %s rows", len(original_df), len(df))
+    logger.info("Processing complete: %s -> %s rows", len(validated_df), len(df))
 
     report = create_cleaning_report(original_df, df)
 

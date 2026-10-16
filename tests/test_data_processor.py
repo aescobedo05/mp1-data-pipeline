@@ -16,7 +16,7 @@ def test_remove_duplicates(sample_df):
 def test_handle_missing_rows(sample_df):
     # Arrange: use the existing rating column.
     df = sample_df[["rating"]].copy()
-    df["rating"] = pd.to_numeric(df["rating"], errors="coerce") 
+    df["rating"] = pd.to_numeric(df["rating"], errors="coerce")
     # note: errors="coerce" converts invalid numeric strings to missing values.
 
     results = handle_missing(df, axis="rows")
@@ -27,7 +27,7 @@ def test_handle_missing_rows(sample_df):
 def test_remove_outliers_iqr(sample_df):
     # Arrange: use numeric ratings and exclude missing values.
     df = sample_df[["rating"]].copy()
-    df["rating"] = pd.to_numeric(df["rating"], errors="coerce") 
+    df["rating"] = pd.to_numeric(df["rating"], errors="coerce")
     df = df.dropna()
     # note: errors="coerce" converts invalid numeric strings to missing values.
 
@@ -38,7 +38,7 @@ def test_remove_outliers_iqr(sample_df):
 def test_remove_outliers_zscore(sample_df):
     # Arrange: use numeric ratings and exclude missing values.
     df = sample_df[["rating"]].copy()
-    df["rating"] = pd.to_numeric(df["rating"], errors="coerce") 
+    df["rating"] = pd.to_numeric(df["rating"], errors="coerce")
     df = df.dropna()
     # note: errors="coerce" converts invalid numeric strings to missing values.
 
@@ -48,7 +48,7 @@ def test_remove_outliers_zscore(sample_df):
 
 def test_remove_outliers_with_unsupported_method(sample_df):
     df = sample_df[["rating"]].copy()
-    df["rating"] = pd.to_numeric(df["rating"], errors="coerce") 
+    df["rating"] = pd.to_numeric(df["rating"], errors="coerce")
     df = df.dropna()
 
     with pytest.raises(ValueError):
